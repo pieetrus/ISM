@@ -1,0 +1,1420 @@
+openapi: 3.0.1
+info:
+  title: Backyard
+  description: This is a Backyard server.
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: pietrusjakub@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+servers:
+  - url: 'https://backyard.swagger.io/v1'
+  - url: 'http://backyard.swagger.io/v1'
+tags:
+  - name: game
+    description: Operations about games
+  - name: user
+    description: Operations about user
+  - name: role
+    description: Operations about roles
+  - name: court
+    description: Operations about courts
+  - name: sportHall
+    description: Operations about sport halls
+paths:
+  /game:
+    get:
+      tags:
+        - game
+      summary: Get games list
+      description: Location type values can be provided with comma separated strings
+      operationId: getGamesList
+      parameters:
+        - name: area
+          in: query
+          description: Location type values that need to be considered for filter
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - court
+                - sporthall
+        - name: limit
+          in: query
+          description: The maximum number of results to retrieve
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The zero-ary offset into the results
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - date
+              - price
+              - location
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Game'
+        '400':
+          description: Invalid locationType value
+          content: {}
+    put:
+      tags:
+        - game
+      summary: Update an existing game
+      operationId: updateGame
+      requestBody:
+        description: Game object that needs to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Game not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - game
+      summary: Add a new game
+      operationId: addGame
+      requestBody:
+        description: Game object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Game'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Game'
+        required: true
+      responses:
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  '/game/{gameId}':
+    get:
+      tags:
+        - game
+      summary: Finds games by gameId
+      description: Multiple status values can be provided with comma separated strings
+      operationId: getGameById
+      parameters:
+        - name: gameId
+          in: path
+          description: Id of game to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Game not found
+          content: {}
+    delete:
+      tags:
+        - game
+      summary: Deletes a game
+      operationId: deleteGame
+      parameters:
+        - name: api_key
+          in: header
+          schema:
+            type: string
+        - name: gameId
+          in: path
+          description: Game id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Game not found
+          content: {}
+  '/game/{gameId}/rate':
+    post:
+      tags:
+        - game
+      summary: Rate game
+      operationId: rateGame
+      parameters:
+        - name: gameId
+          in: path
+          description: Id of game to rate
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Rat object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameRating'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/GameRating'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameRating'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/GameRating'
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  '/game/{gameId}/remove/{userId}':
+    delete:
+      tags:
+        - game
+      summary: Remove user from game
+      operationId: removeUserFromGame
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          description: ID of user that want to remove from game
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '405':
+          description: Invalid input
+          content: {}
+  '/game/{gameId}/uploadImage':
+    post:
+      tags:
+        - game
+      summary: Uploads an image
+      operationId: uploadFile
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                additionalMetadata:
+                  type: string
+                  description: Additional data to pass to server
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  '/game/{gameId}/message':
+    get:
+      tags:
+        - game
+      summary: Get messages list
+      description: Location type values can be provided with comma separated strings
+      operationId: getMessagesList
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game from which messages we want
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: limit
+          in: query
+          description: The maximum number of results to retrieve
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The zero-ary offset into the results
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - date
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Message'
+        '400':
+          description: Invalid gameId value
+          content: {}
+  '/game/{gameId}/message/{userId}':
+    post:
+      tags:
+        - game
+      summary: Add a new message
+      operationId: addMessage
+      parameters:
+        - name: gameId
+          in: path
+          description: Id of game
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          description: Id of user that send message
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Message object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Message'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Message'
+        required: true
+      responses:
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  '/game/{gameId}/join/{userId}/{haveABall}':
+    post:
+      tags:
+        - game
+      summary: Join player to game
+      operationId: joinGame
+      parameters:
+        - name: gameId
+          in: path
+          description: ID of game to join
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: userId
+          in: path
+          description: ID of user that want to join
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: haveABall
+          in: path
+          description: Boolean if user have a ball
+          required: true
+          schema:
+            type: string
+            format: boolean
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Game'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Game'
+        '405':
+          description: Invalid input
+          content: {}
+  /user:
+    get:
+      tags:
+        - user
+      summary: Get users list
+      operationId: getUsersList
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of results to retrieve
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The zero-ary offset into the results
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - firstName
+              - lastName
+              - role
+              - level
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - user
+      summary: Create user
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      x-codegen-request-body-name: body
+  /user/login:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the user
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+            application/xml:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+          content: {}
+  /user/logout:
+    get:
+      tags:
+        - user
+      summary: Logs out current logged in user session
+      operationId: logoutUser
+      responses:
+        default:
+          description: successful operation
+          content: {}
+  '/user/{username}':
+    get:
+      tags:
+        - user
+      summary: Get user by user name
+      operationId: getUserByName
+      parameters:
+        - name: username
+          in: path
+          description: 'The name that needs to be fetched. Use user1 for testing. '
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid username supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+    put:
+      tags:
+        - user
+      summary: Updated user
+      description: This can only be done by the logged in user.
+      operationId: updateUser
+      parameters:
+        - name: username
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updated user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        '400':
+          description: Invalid user supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+      x-codegen-request-body-name: body
+    delete:
+      tags:
+        - user
+      summary: Delete user
+      description: This can only be done by the logged in user.
+      operationId: deleteUser
+      parameters:
+        - name: username
+          in: path
+          description: The name that needs to be deleted
+          required: true
+          schema:
+            type: string
+      responses:
+        '400':
+          description: Invalid username supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+  '/user/{username}/resetPassword':
+    post:
+      tags:
+        - user
+      summary: Resets user password
+      operationId: resetPassword
+      parameters:
+        - name: username
+          in: path
+          description: name that of user we want to get roles
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: successful operation
+          content: {}
+  '/user/{username}/role/{roleId}':
+    post:
+      tags:
+        - user
+      summary: Assign user to role
+      operationId: assignUserToRole
+      parameters:
+        - name: username
+          in: path
+          description: name that of user we want to get roles
+          required: true
+          schema:
+            type: string
+        - name: roleId
+          in: path
+          description: ID of game from which messages we want
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        default:
+          description: successful operation
+          content: {}
+  '/user/{username}/uploadImage':
+    post:
+      tags:
+        - user
+      summary: Uploads an image
+      operationId: uploadUserImage
+      parameters:
+        - name: username
+          in: path
+          description: name that of user we want to get roles
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                additionalMetadata:
+                  type: string
+                  description: Additional data to pass to server
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /role:
+    get:
+      tags:
+        - role
+      summary: Get roles list
+      operationId: getRolesList
+      parameters:
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - name
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+    put:
+      tags:
+        - role
+      summary: Update an existing role
+      operationId: updateRole
+      requestBody:
+        description: Role object that needs to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Role not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - role
+      summary: Create role
+      operationId: createRole
+      requestBody:
+        description: Created role object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Role'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      x-codegen-request-body-name: body
+  '/role/{roleId}':
+    delete:
+      tags:
+        - role
+      summary: Deletes a role
+      operationId: deleteRole
+      parameters:
+        - name: roleId
+          in: path
+          description: Game id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Game not found
+          content: {}
+  '/role/user/{username}':
+    get:
+      tags:
+        - role
+      summary: Get user roles
+      operationId: getUserRoles
+      parameters:
+        - name: username
+          in: path
+          description: name that of user we want to get roles
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '400':
+          description: Invalid username supplied
+          content: {}
+        '404':
+          description: User not found
+          content: {}
+  /court:
+    get:
+      tags:
+        - court
+      summary: Get courts list
+      operationId: getCourtsList
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of results to retrieve
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The zero-ary offset into the results
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - name
+              - location
+              - rating
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Court'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Court'
+    put:
+      tags:
+        - court
+      summary: Update an existing court
+      operationId: updateCourt
+      requestBody:
+        description: Court object that needs to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Court'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Court'
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Court not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - court
+      summary: Create court
+      operationId: createCourt
+      requestBody:
+        description: Created court object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/Court'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      x-codegen-request-body-name: body
+  '/court/{courtId}':
+    get:
+      tags:
+        - court
+      summary: Finds court by courtId
+      operationId: getCourtById
+      parameters:
+        - name: courtId
+          in: path
+          description: Id of court to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Court'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Court'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Court not found
+          content: {}
+    delete:
+      tags:
+        - court
+      summary: Deletes a court
+      operationId: deleteCourt
+      parameters:
+        - name: courtId
+          in: path
+          description: Court id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Court not found
+          content: {}
+  '/court/{courtId}/rate':
+    post:
+      tags:
+        - court
+      summary: Rate court
+      operationId: rateCourt
+      parameters:
+        - name: courtId
+          in: path
+          description: Id of court to rate
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Rate object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CourtRating'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CourtRating'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CourtRating'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CourtRating'
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  '/court/{courtId}/uploadImage':
+    post:
+      tags:
+        - court
+      summary: Uploads an image
+      operationId: uploadCourtImage
+      parameters:
+        - name: courtId
+          in: path
+          description: ID of court to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                additionalMetadata:
+                  type: string
+                  description: Additional data to pass to server
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /sportHall:
+    get:
+      tags:
+        - sportHall
+      summary: Get sport halls list
+      operationId: getSportHallsList
+      parameters:
+        - name: limit
+          in: query
+          description: The maximum number of results to retrieve
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          description: The zero-ary offset into the results
+          schema:
+            type: integer
+        - name: sort
+          in: query
+          description: How to sort the results
+          schema:
+            type: string
+            default: id
+            enum:
+              - id
+              - name
+              - location
+              - rating
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SportHall'
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SportHall'
+    put:
+      tags:
+        - sportHall
+      summary: Update an existing sportHall
+      operationId: updateSportHall
+      requestBody:
+        description: Sport Hall object that needs to be updated
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SportHall'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/SportHall'
+        required: true
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: SportHall not found
+          content: {}
+        '405':
+          description: Validation exception
+          content: {}
+      x-codegen-request-body-name: body
+    post:
+      tags:
+        - sportHall
+      summary: Create sport hall
+      operationId: createSportHall
+      requestBody:
+        description: Created sportHall object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/SportHall'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content: {}
+      x-codegen-request-body-name: body
+  '/sportHall/{sportHallId}':
+    get:
+      tags:
+        - sportHall
+      summary: Finds sport hall by id
+      operationId: getSportHallById
+      parameters:
+        - name: sportHallId
+          in: path
+          description: Id of sport hall to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Court'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Court'
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Sport Hall not found
+          content: {}
+    delete:
+      tags:
+        - sportHall
+      summary: Deletes a sport hall
+      operationId: deleteSportHall
+      parameters:
+        - name: sportHallId
+          in: path
+          description: Sport hall id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid ID supplied
+          content: {}
+        '404':
+          description: Sport Hall not found
+          content: {}
+  '/sportHall/{sportHallId}/rate':
+    post:
+      tags:
+        - sportHall
+      summary: Rate sport hall
+      operationId: rateSportHall
+      parameters:
+        - name: sportHallId
+          in: path
+          description: Id of sport hall to rate
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Rate object that needs to be added
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SportHallRating'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/SportHallRating'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SportHallRating'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/SportHallRating'
+        '405':
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  '/sportHall/{sportHallId}/uploadImage':
+    post:
+      tags:
+        - sportHall
+      summary: Uploads an image
+      operationId: uploadSportHallImage
+      parameters:
+        - name: sportHallId
+          in: path
+          description: ID of sport hall to update
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              properties:
+                additionalMetadata:
+                  type: string
+                  description: Additional data to pass to server
+                file:
+                  type: string
+                  description: file to upload
+                  format: binary
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        level:
+          type: string
+          description: user basketball skills level
+          enum:
+            - newbie
+            - amateur
+            - almostPro
+            - pro
+        age:
+          type: integer
+          format: int32
+        height:
+          type: integer
+          format: int32
+      xml:
+        name: User
+    Role:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      xml:
+        name: Role
+    Message:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        content:
+          type: string
+        date:
+          type: string
+          format: datetime
+      xml:
+        name: Message
+    Game:
+      required:
+        - date
+        - playersMaxAmount
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        courtId:
+          type: integer
+          format: int64
+        sportHallId:
+          type: integer
+          format: int64
+        price:
+          type: number
+          format: float
+        date:
+          type: string
+          format: date-time
+        gotBall:
+          type: string
+          format: boolean
+        playersMaxAmount:
+          type: integer
+          format: int32
+        photoUrls:
+          type: array
+          items:
+            type: string
+      xml:
+        name: Gam
+    Court:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+      xml:
+        name: Court
+    SportHall:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+      xml:
+        name: SportHall
+    CourtRating:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        value:
+          type: integer
+          format: int32
+        surfaceQuality:
+          type: integer
+          format: int32
+        basketsQuality:
+          type: integer
+          format: int32
+        boardsQuality:
+          type: integer
+          format: int32
+      xml:
+        name: CourtRating
+    SportHallRating:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        value:
+          type: integer
+          format: int32
+        parquetQuality:
+          type: integer
+          format: int32
+        basketsQuality:
+          type: integer
+          format: int32
+        boardsQuality:
+          type: integer
+          format: int32
+        showersQuality:
+          type: integer
+          format: int32
+      xml:
+        name: CourtRating
+    GameRating:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+          format: int64
+        value:
+          type: integer
+          format: int32
+      xml:
+        name: CourtRating
