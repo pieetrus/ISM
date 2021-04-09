@@ -6,17 +6,27 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * User
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-04-08T20:35:21.763Z[GMT]")
-
-
+@XmlRootElement(name = "User")
+@Entity
+@Table(name = "user")
 public class User   {
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)	
   @JsonProperty("id")
   private Long id = null;
 

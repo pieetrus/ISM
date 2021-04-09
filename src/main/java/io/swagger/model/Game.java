@@ -8,17 +8,28 @@ import java.util.ArrayList;
 import java.util.List;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Game
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-04-08T20:35:21.763Z[GMT]")
-
-
+@XmlRootElement(name = "Game")
+@Entity
+@Table(name = "game")
 public class Game   {
+
+  @Id
+  @GeneratedValue(strategy=GenerationType.IDENTITY)	
   @JsonProperty("id")
   private Long id = null;
 
