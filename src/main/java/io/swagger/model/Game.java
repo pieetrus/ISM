@@ -9,6 +9,7 @@ import java.util.List;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,6 +53,7 @@ public class Game   {
   private Integer playersMaxAmount = null;
 
   @JsonProperty("photoUrls")
+  @ElementCollection(targetClass=String.class)
   @Valid
   private List<String> photoUrls = null;
 
