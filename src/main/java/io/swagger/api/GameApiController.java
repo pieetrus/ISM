@@ -60,10 +60,9 @@ public class GameApiController implements GameApi {
         this.request = request;
     }
 
-    public ResponseEntity<Void> addGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Game body) {
+    public ResponseEntity<Game> addGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Game body) {
         String accept = request.getHeader("Accept");
-        var xd = gameService.addGame(body);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        return new ResponseEntity<Game>(gameService.addGame(body), HttpStatus.OK);
     }
 
     public ResponseEntity<Void> addMessage(@Parameter(in = ParameterIn.PATH, description = "Id of game", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId,@Parameter(in = ParameterIn.PATH, description = "Id of user that send message", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Message object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Message body) {
@@ -73,37 +72,20 @@ public class GameApiController implements GameApi {
 
     public ResponseEntity<Void> deleteGame(@Parameter(in = ParameterIn.PATH, description = "Game id to delete", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId,@Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        gameService.deleteGameById(gameId);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Game> getGameById(@Parameter(in = ParameterIn.PATH, description = "Id of game to return", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<Game>(objectMapper.readValue("{\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n}", Game.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<Game>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<Game>(HttpStatus.NOT_IMPLEMENTED);
+        
+        return new ResponseEntity<Game>(gameService.findGameById(gameId), HttpStatus.OK);
     }
 
     public ResponseEntity<List<Game>> getGamesList(@NotNull @Parameter(in = ParameterIn.QUERY, description = "Location type values that need to be considered for filter" ,required=true,schema=@Schema(allowableValues={ "court", "sporthall" }
 )) @Valid @RequestParam(value = "area", required = true) List<String> area,@Parameter(in = ParameterIn.QUERY, description = "The maximum number of results to retrieve" ,schema=@Schema()) @Valid @RequestParam(value = "limit", required = false) Integer limit,@Parameter(in = ParameterIn.QUERY, description = "The zero-ary offset into the results" ,schema=@Schema()) @Valid @RequestParam(value = "offset", required = false) Integer offset,@Parameter(in = ParameterIn.QUERY, description = "How to sort the results" ,schema=@Schema(allowableValues={ "id", "date", "price", "location" }
 , defaultValue="id")) @Valid @RequestParam(value = "sort", required = false, defaultValue="id") String sort) {
         String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-//            try {
-//                return new ResponseEntity<List<Game>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-//            } catch (IOException e) {
-//                log.error("Couldn't serialize response for content type application/json", e);
-//                return new ResponseEntity<List<Game>>(HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-        	
-        }
-        
         var games = gameService.findAllGames();
     	return new ResponseEntity<List<Game>>(games, HttpStatus.OK);
     }
@@ -165,9 +147,10 @@ public class GameApiController implements GameApi {
         return new ResponseEntity<Game>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    public ResponseEntity<Void> updateGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be updated", required=true, schema=@Schema()) @Valid @RequestBody Game body) {
+    public ResponseEntity<Game> updateGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be updated", required=true, schema=@Schema()) @Valid @RequestBody Game body) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        
+        return new ResponseEntity<Game>(gameService.updateGame(body),HttpStatus.OK);
     }
 
     public ResponseEntity<ModelApiResponse> uploadFile(@Parameter(in = ParameterIn.PATH, description = "ID of game to update", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId,@Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="additionalMetadata", required=false)  String additionalMetadata,@Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file) {

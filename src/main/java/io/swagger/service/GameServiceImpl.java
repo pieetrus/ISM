@@ -42,6 +42,18 @@ public class GameServiceImpl implements GameService {
 
 	@Override
 	public Game updateGame(Game game) {
+		var entityOptional = gameRepository.findById(game.getId());
+		if(entityOptional.isPresent()) {
+			var entity =  entityOptional.get();
+			entity.setCourtId(game.getCourtId());
+			entity.setDate(game.getDate());
+			entity.setGotBall(game.getGotBall());
+			entity.setPrice(game.getPrice());
+			entity.setSportHallId(game.getSportHallId());
+			entity.setPlayersMaxAmount(game.getPlayersMaxAmount());
+			entity.setPhotoUrls(game.getPhotoUrls());
+			return gameRepository.save(entity);
+		}
 		// TODO Auto-generated method stub
 		return null;
 	}

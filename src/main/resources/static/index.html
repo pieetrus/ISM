@@ -15,42 +15,51 @@
   <a href="#" class="w3-bar-item w3-button w3-right">John Doe (user)</a>
 </div>
 
-<div class="w3-container">
-Games
+<div class="w3-container" >
 <div class="w3-bar"> 
-  <button class="w3-button w3-right w3-green">Add game &raquo;</button>
+<h1  class="w3-left">Games</h1>
+
+  <button class="w3-button w3-right w3-green" ng-click="editGameN()" style="margin-top: 20px;">Add game &raquo;</button>
 </div>
 
-<div class="w3-container w3-card-4">
-  <ul class="w3-ul w3-card" style="width:50%; margin-top:30px">
+<form ng-hide="hideform">
+  <h3 ng-show="edit">Create New Game:</h3>
+  <h3 ng-hide="edit">Edit Game:</h3>
+    <label>CourtId:</label>
+    <input class="w3-input w3-border" type="text" ng-model="courtId" ng-disabled="!edit" placeholder="CourtId">
+  <br>
+    <label>SportHallId:</label>
+    <input class="w3-input w3-border" type="text" ng-model="sportHallId" ng-disabled="!edit" placeholder="SportHallId">
+ <br>
+    <label>Price:</label>
+    <input class="w3-input w3-border" type="text" ng-model="price" ng-disabled="!edit" placeholder="Price">
+ <br>
+    <label>Date:</label>
+    <input class="w3-input w3-border" type="text" ng-model="date" ng-disabled="!edit" placeholder="Date">
+ <br>
+    <label>GotBall:</label>
+    <input class="w3-input w3-border" type="text" ng-model="gotBall" ng-disabled="!edit" placeholder="GotBall">
+ <br>
+    <label>PlayersMaxAmount:</label>
+    <input class="w3-input w3-border" type="text" ng-model="playersMaxAmount" ng-disabled="!edit" placeholder="PlayersMaxAmount">
+<button class="w3-btn w3-green w3-ripple" ng-click="saveGame()" ng-disabled="error || incomplete" style="margin-top:20px; margin-bottom:20px">&#10004; Save Changes</button>
+</form>
+
+
+  <ul class="w3-ul w3-card" style="width:50%; margin-top:30px" ng-repeat="game in games">
     <li>
-    <p class="w3-container w3-card" style= "width: 160px;">Court/SportHall</p>
-    <p>Location:</p>
-    <p>Players:</p>
-    <p>Have a ball?:</p>
-    <p>Game time:</p>
-    <button>See details</button>
-    <img alt="photo" style="float: right;" />
+    <img src="who-we-are-landscape.jpg" width="225" alt="photo"  style="left:500px; position:absolute" />
+    <p class="w3-container w3-card" style= "width: 70px;">Court</p>
+    <p>MaxPlayers: {{game.playersMaxAmount}}</p>
+    <p>Have a ball?: {{game.gotBall}}</p>
+    <p>Game time: {{game.date.split('T')[0]}}</p>
+    <button class="w3-btn w3-blue">See details</button>
+    <button class="w3-btn w3-yellow" ng-click="editGame(games.indexOf(game))">Edit game</button>
+    <button class="w3-btn w3-red" ng-click="deleteGame(game.id)">Delete game</button>
     </li>
   </ul>
   <br>
-</div>
 
-
-<div class="w3-container w3-card-4">
-  <ul class="w3-ul w3-card" style="width:50%; margin-top:30px">
-    <li>
-    <p class="w3-container w3-card" style= "width: 160px;">Court/SportHall</p>
-    <p>Location:</p>
-    <p>Players:</p>
-    <p>Have a ball?:</p>
-    <p>Game time:</p>
-    <button>See details</button>
-    <img alt="photo" style="float: right;" />
-    </li>
-  </ul>
-  <br>
-</div>
 
 </div>
 

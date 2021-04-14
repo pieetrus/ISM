@@ -46,7 +46,7 @@ public interface GameApi {
     @RequestMapping(value = "/game",
         consumes = { "application/json", "application/xml" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> addGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Game body);
+    ResponseEntity<Game> addGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Game body);
 
 
     @Operation(summary = "Add a new message", description = "", tags={ "game" })
@@ -150,7 +150,7 @@ public interface GameApi {
     @RequestMapping(value = "/game",
         consumes = { "application/json", "application/xml" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be updated", required=true, schema=@Schema()) @Valid @RequestBody Game body);
+    ResponseEntity<Game> updateGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be updated", required=true, schema=@Schema()) @Valid @RequestBody Game body);
 
 
     @Operation(summary = "Uploads an image", description = "", tags={ "game" })
