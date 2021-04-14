@@ -4,6 +4,9 @@ import io.swagger.model.Game;
 import io.swagger.model.GameRating;
 import io.swagger.model.Message;
 import io.swagger.model.ModelApiResponse;
+import io.swagger.service.GameService;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +43,11 @@ import java.util.Map;
 @RestController
 public class GameApiController implements GameApi {
 
+	@Autowired
+	private GameService gameService;
+	//without DI you can create service using new on a chosen class
+	//private StudentService studentService = new StudentServiceInMemImpl();
+	
     private static final Logger log = LoggerFactory.getLogger(GameApiController.class);
 
     private final ObjectMapper objectMapper;
@@ -54,7 +62,8 @@ public class GameApiController implements GameApi {
 
     public ResponseEntity<Void> addGame(@Parameter(in = ParameterIn.DEFAULT, description = "Game object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Game body) {
         String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        var xd = gameService.addGame(body);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> addMessage(@Parameter(in = ParameterIn.PATH, description = "Id of game", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId,@Parameter(in = ParameterIn.PATH, description = "Id of user that send message", required=true, schema=@Schema()) @PathVariable("userId") Long userId,@Parameter(in = ParameterIn.DEFAULT, description = "Message object that needs to be added", required=true, schema=@Schema()) @Valid @RequestBody Message body) {
@@ -86,15 +95,17 @@ public class GameApiController implements GameApi {
 , defaultValue="id")) @Valid @RequestParam(value = "sort", required = false, defaultValue="id") String sort) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Game>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Game>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+//            try {
+//                return new ResponseEntity<List<Game>>(objectMapper.readValue("[ {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n}, {\n  \"date\" : \"2000-01-23T04:56:07.000+00:00\",\n  \"sportHallId\" : 1,\n  \"photoUrls\" : [ \"photoUrls\", \"photoUrls\" ],\n  \"price\" : 5.962134,\n  \"gotBall\" : \"gotBall\",\n  \"id\" : 0,\n  \"playersMaxAmount\" : 5,\n  \"courtId\" : 6\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
+//            } catch (IOException e) {
+//                log.error("Couldn't serialize response for content type application/json", e);
+//                return new ResponseEntity<List<Game>>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+        	
         }
-
-        return new ResponseEntity<List<Game>>(HttpStatus.NOT_IMPLEMENTED);
+        
+        var games = gameService.findAllGames();
+    	return new ResponseEntity<List<Game>>(games, HttpStatus.OK);
     }
 
     public ResponseEntity<List<Message>> getMessagesList(@Parameter(in = ParameterIn.PATH, description = "ID of game from which messages we want", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId,@Parameter(in = ParameterIn.QUERY, description = "The maximum number of results to retrieve" ,schema=@Schema()) @Valid @RequestParam(value = "limit", required = false) Integer limit,@Parameter(in = ParameterIn.QUERY, description = "The zero-ary offset into the results" ,schema=@Schema()) @Valid @RequestParam(value = "offset", required = false) Integer offset,@Parameter(in = ParameterIn.QUERY, description = "How to sort the results" ,schema=@Schema(allowableValues={ "id", "date" }
