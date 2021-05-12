@@ -5,12 +5,14 @@ import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import springfox.documentation.oas.annotations.EnableOpenApi;
 
 @SpringBootApplication
 @EnableOpenApi
-@ComponentScan(basePackages = { "io.swagger", "io.swagger.api" , "io.swagger.configuration"})
+@EnableAspectJAutoProxy
+@ComponentScan(basePackages = { "io.swagger", "io.swagger.api" , "io.swagger.configuration", "aspects"})
 public class Swagger2SpringBoot implements CommandLineRunner {
 
     @Override
