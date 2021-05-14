@@ -162,5 +162,13 @@ public interface GameApi {
         method = RequestMethod.POST)
     ResponseEntity<ModelApiResponse> uploadFile(@Parameter(in = ParameterIn.PATH, description = "ID of game to update", required=true, schema=@Schema()) @PathVariable("gameId") Long gameId, @Parameter(in = ParameterIn.DEFAULT, description = "",schema=@Schema()) @RequestParam(value="additionalMetadata", required=false)  String additionalMetadata, @Parameter(description = "file detail") @Valid @RequestPart("file") MultipartFile file);
 
+    
+    @Operation(summary = "get games stats", description = "", tags={ "game" })
+        @ApiResponses(value = { 
+            @ApiResponse(responseCode = "200", description = "successful operation", content = @Content(schema = @Schema(implementation = String.class))) })
+        @RequestMapping(value = "/stats",
+            produces = { "application/json" }, 
+            method = RequestMethod.GET)
+    ResponseEntity<String> getStats();
 }
 

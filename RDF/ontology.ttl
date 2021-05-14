@@ -1,0 +1,29 @@
+@prefix : <http://example.org/ontologies/library#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:Author rdf:type rdf:Class .
+	:hasFirstName rdf:type rdf:Property ;
+	        rdfs:domain :Author .
+	:hasSurname rdf:type rdf:Property ;
+	        rdfs:domain :Author .
+	:hasBook rdf:type rdf:Property ;
+	        rdfs:domain :Author .
+	        rdfs:range :Book .
+	:hasHomeCountry rdf:type rdf:Property ;
+	        rdfs:domain :Author .
+
+:Book rdf:type rdf:Class .
+	:hasTitle rdf:type rdf:Property ;
+	        rdfs:domain :Book .
+	:hasYearOfRelease rdf:type rdf:Property ;
+	        rdfs:domain :Book .
+	:hasAuthor rdf:type rdf:Property ;
+	        rdfs:domain :Book .
+	        rdfs:range :Author .
+
+:Country rdf:type rdf:Class .
+	:hasName rdf:type rdf:Property ;
+	        rdfs:domain :Country .
+	:hasCapitalCity rdf:type rdf:Property ;
+	        rdfs:domain :Country .

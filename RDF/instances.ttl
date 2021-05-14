@@ -1,0 +1,54 @@
+@prefix : <http://example.org/ontologies/library#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+:polska :hasName :Polska .
+:polska :hasCapitalCity :Warszawa .
+
+:rpa :hasName :RPA .
+:rpa :hasCapitalCity :Pretoria .
+
+:usa :hasName :USA .
+:usa :hasCapitalCity :Waszyngton .
+
+:druzynaPierscienia :hasTitle :DruzynaPierscienia .
+:druzynaPierscienia :hasYearOfRelease :1954 .
+:druzynaPierscienia :hasAuthor :tolkien .
+
+:slepnącOdSwiateł :hasTitle :SlepnacOdSwiatel .
+:slepnącOdSwiateł  :hasYearOfRelease :2014 .
+:slepnącOdSwiateł :hasAuthor :jakubZulczyk .
+
+:zrobMiJakasKrzywde :hasTitle :ZrobMiJakasKrzywde .
+:zrobMiJakasKrzywde  :hasYearOfRelease :2018 .
+:zrobMiJakasKrzywde :hasAuthor :jakubZulczyk .
+
+:wGrze :hasTitle :WGrze .
+:wGrze  :hasYearOfRelease :2021 .
+:wGrze :hasAuthor :jerzyBrzeczek .
+
+:wakingUp :hasTitle :WakingUp .
+:wakingUp  :hasYearOfRelease :2014 .
+:wakingUp :hasAuthor :samHarris .
+
+:jakubZulczyk :hasFirstName :Jakub .
+:jakubZulczyk  :hasSurname :Zulczyk .
+:jakubZulczyk  :hasBook :slepnacOdSwiatel .
+:jakubZulczyk  :hasBook :zrobMiJakasKrzywde .
+:jakubZulczyk  :hasHomeCountry :polska .
+
+:tolkien :hasFirstName :JRR .
+:tolkien :hasSurname :Tolkien .
+:tolkien :hasBook :druzynaPierscienia .
+:tolkien  :hasHomeCountry :rpa .
+
+:jerzyBrzeczek :hasFirstName :Jerzy .
+:jerzyBrzeczek :hasSurname :Brzeczek .
+:jerzyBrzeczek :hasBook :wGrze .
+:jerzyBrzeczek  :hasHomeCountry :poland .
+
+:samHarris :hasFirstName :Sam .
+:samHarris :hasSurname :Harris .
+:samHarris :hasBook :wakingUp .
+:samHarris  :hasHomeCountry :usa .

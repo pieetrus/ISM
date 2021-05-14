@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.Game;
 import io.swagger.model.GameRating;
+import io.swagger.model.GameStats;
 import io.swagger.model.Message;
 import io.swagger.model.ModelApiResponse;
 import io.swagger.service.GameService;
@@ -9,6 +10,8 @@ import io.swagger.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import aspects.MyAspect;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -36,6 +39,7 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -166,5 +170,34 @@ public class GameApiController implements GameApi {
 
         return new ResponseEntity<ModelApiResponse>(HttpStatus.NOT_IMPLEMENTED);
     }
+    
+   
+	public ResponseEntity<String> getStats() {
+		
+		GameStats gameStats =  MyAspect.GameStats();
+		
+		double g_prct = gameStats.getGET_PRC();
+		int g = gameStats.getGET();
+		
+		double p_prct = gameStats.getPOST_PRC();
+		int p = gameStats.getPOST();
+		
+		double d_prct = gameStats.getDEL_PRC();
+		int d = gameStats.getDELETE();
+		
+		String get = "GET: |PRCT|: " + String.valueOf(g_prct) + " |ALL|: " + String.valueOf(g) + "\n"; 
+		
+		String post = "POST: |PRCT|: " + String.valueOf(p_prct) + " |ALL|: " + String.valueOf(p) + "\n"; 
+		
+		String del = "DEL: |PRCT|:" + String.valueOf(d_prct) + " |ALL|: " + String.valueOf(d); 
+		
+		
+		String returnedObject = get + post + del;
+		
+		return ResponseEntity.ok(returnedObject);
+	}
+    
+    
+    
 
 }
